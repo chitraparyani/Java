@@ -1,0 +1,415 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package userInterface.FinancialCheckRole;
+
+import Business.EcoSystem;
+import Business.Enterprise.AdoptionEnterprise;
+import Business.Enterprise.Enterprise;
+import Business.Enterprise.HomeStudyEnterprise;
+import Business.Network.Network;
+import Business.Organization.EducationalCheckOrganization;
+import Business.Organization.FinancialCheckOrganization;
+import Business.Organization.ManagementOrganization;
+import Business.Organization.Organization;
+import Business.ProspectiveParent.ProspectiveParent;
+import Business.UserAccount.UserAccount;
+import Business.WorkQueue.EducationalCheckWorkRequest;
+import Business.WorkQueue.FinancialCheckWorkRequest;
+import Business.WorkQueue.WorkRequest;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.table.DefaultTableModel;
+import static userInterface.RegisterParentRole.RegisterParent1JPanel.sendEmail;
+
+/**
+ *
+ * @author kinnari
+ */
+public class FinancialCheckWorkAreaJPanel extends javax.swing.JPanel {
+
+    /**
+     * Creates new form FinancialCheckWorkAreaJPanel
+     */
+    private JPanel userProcessContainer;
+    private UserAccount account;
+    private FinancialCheckOrganization organization;
+    private HomeStudyEnterprise enterprise;
+    private EcoSystem business;
+
+    public FinancialCheckWorkAreaJPanel(JPanel userProcessContainer, UserAccount account, FinancialCheckOrganization financialCheckOrganization, HomeStudyEnterprise homeStudyEnterprise, EcoSystem business) {
+
+        initComponents();
+        this.userProcessContainer = userProcessContainer;
+        this.account = account;
+        this.enterprise = homeStudyEnterprise;
+        this.organization = financialCheckOrganization;
+        this.business = business;
+        refreshData();
+        populateRequestTable();
+        populateRequestAssignedToMeJTable();
+        populateEducationalRequestTable();
+
+    }
+
+    public void populateRequestTable() {
+        DefaultTableModel model = (DefaultTableModel) workRequestJTable.getModel();
+
+        model.setRowCount(0);
+
+        for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+            if (request.getReceiver() == null) {
+                Object[] row = new Object[5];
+                row[0] = request;
+                row[1] = request.getSender().getEmployee().getName();
+                row[2] = request.getReceiver() == null ? null : request.getReceiver().getEmployee().getName();
+                row[3] = request.getStatus();
+                row[4] = request.getParent().getEmailId();
+
+                model.addRow(row);
+            }
+        }
+
+    }
+
+    public void populateRequestAssignedToMeJTable() {
+        DefaultTableModel model = (DefaultTableModel) workRequestAssignedToMeTable2.getModel();
+
+        model.setRowCount(0);
+
+        for (WorkRequest request : organization.getWorkQueue().getWorkRequestList()) {
+            if (request.isProcessedFlag() == false && request.getReceiver() != null) {
+                Object[] row = new Object[6];
+                row[0] = request;
+                row[1] = request.getSender().getEmployee().getName();
+                row[2] = request.getReceiver() == null ? null : request.getReceiver().getEmployee().getName();
+                row[3] = request.getStatus();
+                row[4] = request.isProcessedFlag();
+                row[5] = request.getParent().getEmailId();
+                // String result = ((FinancialCheckWorkRequest) request).getStatus();
+                //row[3] = result == null ? "Waiting" : result;
+                model.addRow(row);
+            }
+        }
+
+    }
+
+    public void populateEducationalRequestTable() {
+        DefaultTableModel model = (DefaultTableModel) workRequestEducationalJTable.getModel();
+
+        model.setRowCount(0);
+
+        for (WorkRequest request : account.getWorkQueue().getWorkRequestList()) {
+            if (request.isProcessedFlag() == true) {
+                Object[] row = new Object[4];
+                row[0] = request;
+                row[1] = request.getSender().getEmployee().getName();
+                row[2] = request.getReceiver() == null ? null : request.getReceiver().getEmployee().getName();
+                //if(req !=null){
+                //row[3] = req.getStatus()== null? request.getStatus():req.getStatus();
+                //}else{
+                String result = ((EducationalCheckWorkRequest) request).getStatus();
+                row[3] = result == null ? "Waiting" : result;
+                // row[3] = request.getStatus();
+                //}
+
+                model.addRow(row);
+            }
+        }
+
+    }
+
+    /**
+     * This method is called from within the constructor to initialize the form.
+     * WARNING: Do NOT modify this code. The content of this method is always
+     * regenerated by the Form Editor.
+     */
+    @SuppressWarnings("unchecked")
+    // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
+    private void initComponents() {
+
+        processJButton = new javax.swing.JButton();
+        refreshJButton = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        workRequestJTable = new javax.swing.JTable();
+        assignJButton = new javax.swing.JButton();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        workRequestEducationalJTable = new javax.swing.JTable();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        workRequestAssignedToMeTable2 = new javax.swing.JTable();
+
+        processJButton.setText("Process");
+        processJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                processJButtonActionPerformed(evt);
+            }
+        });
+
+        refreshJButton.setText("Refresh");
+        refreshJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                refreshJButtonActionPerformed(evt);
+            }
+        });
+
+        workRequestJTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Parent", "Sender", "Receiver", "Status", "EmailId"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane1.setViewportView(workRequestJTable);
+
+        assignJButton.setText("Assign to me");
+        assignJButton.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                assignJButtonActionPerformed(evt);
+            }
+        });
+
+        workRequestEducationalJTable.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Parent", "Sender", "Receiver", "Status", "EmailId"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane2.setViewportView(workRequestEducationalJTable);
+
+        workRequestAssignedToMeTable2.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+                "Parent", "Sender", "Receiver", "Status", "EmailId"
+            }
+        ) {
+            Class[] types = new Class [] {
+                java.lang.Object.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class
+            };
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
+
+            public Class getColumnClass(int columnIndex) {
+                return types [columnIndex];
+            }
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jScrollPane3.setViewportView(workRequestAssignedToMeTable2);
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
+        this.setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(82, 82, 82)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(325, 325, 325)
+                                .addComponent(refreshJButton)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(processJButton)
+                            .addComponent(assignJButton))))
+                .addGap(302, 302, 302))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(80, 80, 80)
+                .addComponent(refreshJButton)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(33, 33, 33)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(92, 92, 92)
+                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(83, 83, 83)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 96, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(65, 65, 65)
+                        .addComponent(assignJButton)
+                        .addGap(165, 165, 165)
+                        .addComponent(processJButton)))
+                .addGap(41, 41, 41))
+        );
+    }// </editor-fold>//GEN-END:initComponents
+
+    private void processJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_processJButtonActionPerformed
+
+        int selectedRow = workRequestAssignedToMeTable2.getSelectedRow();
+
+        if (selectedRow < 0) {
+
+            JOptionPane.showMessageDialog(null, "Please select a request message to process.");
+
+        } else {
+
+            FinancialCheckWorkRequest request = (FinancialCheckWorkRequest) workRequestAssignedToMeTable2.getValueAt(selectedRow, 0);
+
+            ProspectiveParent p1 = request.getParent();
+
+            if (p1.getTotalIncome() < 2000000) {
+                request.setStatus("Parent is not eligible for adoption");
+                JOptionPane.showMessageDialog(null, "Parent is not eligible for adoption ");
+                sendEmail("parent2202@gmail.com", "Parent@2202", request.getParent().getEmailId().toString(), "Status Update || Financial Check Request Rejected", "Dear " + request.getParent().toString() + "," + "Sorry, Your Application has been rejected by Financial Check Organization and you are not eligible for adoption.");
+                return;
+            }
+
+            //request.setStatus(" Educational Check Processing");
+            EducationalCheckWorkRequest req = new EducationalCheckWorkRequest();
+
+            request.setStatus(" Initiate Educational check");
+            //request.setSender(account);
+            // request.setParent(request.getParent());
+            req.setSender(account);
+            req.setParent(request.getParent());
+            String email = request.getParent().getEmailId();
+            req.setStatus("Initiate Educational check");
+            req.setProcessedFlag(true);
+            request.setProcessedFlag(true);
+            changeStatusOncompletion(request);
+            Organization org = null;
+            for (Organization organiz : enterprise.getOrganizationDirectory().getOrganizationList()) {
+                if (organiz instanceof EducationalCheckOrganization) {
+                    org = organiz;
+                    break;
+                }
+
+            }
+            if (org != null) {
+
+                org.getWorkQueue().getWorkRequestList().add(req);
+                account.getWorkQueue().getWorkRequestList().add(req);
+                JOptionPane.showMessageDialog(null, "Request message sent to Educational check Organization");
+                sendEmail("parent2202@gmail.com", "Parent@2202", email, "Status Update || Financial Check Request Approved", "Dear " + request.getParent().toString() + "," + "Congrats, Your Application has been Approved by Financial Check Organization and now, it is with Education Check Organization");
+                populateRequestTable();
+            }
+
+        }
+        populateEducationalRequestTable();
+        populateRequestAssignedToMeJTable();
+
+    }//GEN-LAST:event_processJButtonActionPerformed
+
+    private void refreshJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_refreshJButtonActionPerformed
+        populateRequestTable();
+        populateEducationalRequestTable();
+        populateRequestAssignedToMeJTable();
+    }//GEN-LAST:event_refreshJButtonActionPerformed
+
+    private void assignJButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_assignJButtonActionPerformed
+
+        int selectedRow = workRequestJTable.getSelectedRow();
+
+        if (selectedRow < 0) {
+            return;
+        }
+
+        WorkRequest request = (WorkRequest) workRequestJTable.getValueAt(selectedRow, 0);
+        request.setReceiver(account);
+        request.setStatus("Financial check initiated");
+        request.setProcessedFlag(false);
+        populateRequestTable();
+        populateRequestAssignedToMeJTable();
+    }//GEN-LAST:event_assignJButtonActionPerformed
+    public void refreshData() {
+
+        for (Organization o : enterprise.getOrganizationDirectory().getOrganizationList()) {
+            if (o.getWorkQueue().getWorkRequestList() != null) {
+                for (WorkRequest w : o.getWorkQueue().getWorkRequestList()) {
+                    if (w.getReceiver() != null && account.getWorkQueue().getWorkRequestList() != null) {
+                        for (WorkRequest Req : account.getWorkQueue().getWorkRequestList()) {
+                            //w.setStatus(c);
+                            if (w.getParent().equals(Req.getParent())) {
+                                String status = Req.getStatus();
+                                w.setStatus(status);
+                            }
+                        }
+                    }
+
+                }
+            }
+        }
+    }
+
+    public void changeStatusOncompletion(WorkRequest request) {
+
+        for (Network n : business.getNetworkList()) {
+            for (Enterprise e : n.getEnterpriseDirectory().getEnterpriseList()) {
+
+                if (e instanceof AdoptionEnterprise) {
+
+                    for (Organization o : e.getOrganizationDirectory().getOrganizationList()) {
+
+                        if (o instanceof ManagementOrganization) {
+
+                            for (WorkRequest w : o.getWorkQueue().getWorkRequestList()) {
+                                if (request.getParent().equals(w.getParent())) {
+                                    w.setStatus("Financial check complete");
+                                }                                
+                                w.setMessage("Educational check intiated");
+                            }
+                        }
+                    }
+                }
+            }
+
+        }
+    }
+    // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton assignJButton;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JButton processJButton;
+    private javax.swing.JButton refreshJButton;
+    private javax.swing.JTable workRequestAssignedToMeTable2;
+    private javax.swing.JTable workRequestEducationalJTable;
+    private javax.swing.JTable workRequestJTable;
+    // End of variables declaration//GEN-END:variables
+}
